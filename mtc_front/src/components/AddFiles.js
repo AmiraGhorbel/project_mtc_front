@@ -6,6 +6,7 @@ import { Viewer, Worker } from '@react-pdf-viewer/core'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
 import '@react-pdf-viewer/core/lib/styles/index.css'
 import '@react-pdf-viewer/default-layout/lib/styles/index.css'
+import Navbar from './NavBar/Navbar'
 
 
 //This component allows you to add files from the 'add' button in order to view or print this file from the 'upload' button
@@ -65,6 +66,7 @@ export default function AddFiles() {
     }
     return (
         <div>
+<Navbar/>
             <form>
                 <h3>Download area</h3>
                 <input type="file" className='box-upload' placeholder='search for a file' onChange={handleChangee} />
