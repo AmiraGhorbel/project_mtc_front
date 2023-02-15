@@ -1,14 +1,35 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { FaUserAlt, FaEnvelope, FaBan, FaBirthdayCake ,FaPhoneAlt} from "react-icons/fa";
 export default function SignUp() {
   const params = useParams();
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-  const [FirsName, setFirstName] = useState("");
-  const [LastName, setLastName] = useState("");
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
-  const handleClick = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [telephone, setTelephone] = useState();
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [gender, setGender] = useState("");
+  //const [public_id, setpublic_id] = useState("");
+  const [role, setrole] = useState("");
+  //const [resetPasswordToken, setResetPasswordToken] = useState("");
+  //const [resetPasswordExpire, setResetPasswordExpire] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3500/User/")
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => console.log(err));
+
+      
+  }, []);
+  /* const handleClick = () => {
     let data = { FirsName, LastName, Email, Password };
     let userId = JSON.parse(localStorage.getItem("userId") || "1");
     data.id = userId;
@@ -17,7 +38,71 @@ export default function SignUp() {
     console.log(user);
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("userId", JSON.stringify(userId + 1));
+  };*/
+  /*
+ the elements exist in each document in the data
+firstName: String,
+lastName: String,
+userName: String,
+password: String,
+telephone: Number,
+email: String,
+dateOfBirth: String,
+gender: String,
+avatar.public_id,
+avatar.role
+   resetPasswordToken: String,
+   resetPasswordExpire: Date*/
+  const handleClick = (event) => {
+    //console.log("date : ",dateOfBirth)
+   // console.log("role : ",role)
+    let data = {
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+      telephone:parseInt(telephone) ,
+      email: email,
+      dateOfBirth: dateOfBirth,
+      gender: gender,
+    //  avater: { public_id: public_id, role: role },
+      role:role
+    //  resetPasswordToken: resetPasswordToken,
+    //  resetPasswordExpire: resetPasswordExpire,
+    };
+
+    let exist = false; //to check if the user exist or ont
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].email == email) {
+        console.log("mail");
+        alert("email used try again"); // message user exists
+        navigate("/SignUp/");
+        exist = true;
+      }
+      if (exist == true) {
+        break;
+      }
+    }
+    if (exist == false) {
+      // if user is not existed, we will add them to the data : User
+      axios
+        .post("http://localhost:3500/User/", data)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        axios
+        .get("http://localhost:3500/User/")
+        .then((res) => {
+          setUsers(res.data);
+        })
+        .catch((err) => console.log(err));
+         navigate("/SignIn")
+
+    }
   };
+
   return (
     <div>
       <section className="vh-100" style={{ backgroundColor: "#eee" }}>
@@ -40,101 +125,119 @@ export default function SignUp() {
                           </button>
                         </h6>
                       </center>
-                      <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                        Sign up
+                      <p
+                        style={{ color: "#080039" }}
+                        className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4"
+                      >
+                        <p>Sign up</p>
                       </p>
+
                       <form className="mx-1 mx-md-4">
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-user fa-lg me-3 fa-fw" />
                           <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={FirsName}
-                              placeholder="FirstName"
-                              onChange={(e) => setFirstName(e.target.value)}
-                            />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example1c"
-                            >
-                              First Name
-                            </label>
-                          </div>
-                        </div>
-                        <div className="d-flex flex-row align-items-center mb-4">
-                          <i className="fas fa-user fa-lg me-3 fa-fw" />
-                          <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={LastName}
-                              placeholder="LastName"
-                              onChange={(e) => setLastName(e.target.value)}
-                            />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example1c"
-                            >
-                              Last Name
-                            </label>
-                          </div>
-                        </div>
-                        <div className="d-flex flex-row align-items-center mb-4">
-                          <i className="fas fa-user fa-lg me-3 fa-fw" />
-                          <div className="form-outline flex-fill mb-0">
-                            <input type="date" />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example1c"
-                            >
-                              Date
-                            </label>
-                          </div>
-                          <div className="d-flex flex-row align-items-center mb-4">
-                            <i className="fas fa-user fa-lg me-3 fa-fw" />
-                            <div className="form-outline flex-fill mb-0">
-                              <select>
-                                <option value="student">Student</option>
-                                <option value="instructor">Instructor</option>
-                              </select>
+                            <div className="input-group mb-3">
+                              <div className="input-group-text">
+                                <FaUserAlt />
+                              </div>
+                              <input
+                                type="text"
+                                style={{ padding: 24 }}
+                                className="input form-control"
+                                value={firstName}
+                                placeholder="FirstName"
+                                onChange={(e) => setFirstName(e.target.value)}
+                              />
+                            </div>
+                            <div className="input-group mb-3">
+                              <div className="input-group-text">
+                                <FaUserAlt />
+                              </div>
+                              <input
+                                type="text"
+                                style={{ padding: 24 }}
+                                className="form-control"
+                                value={lastName}
+                                placeholder="LastName"
+                                onChange={(e) => setLastName(e.target.value)}
+                              />
                             </div>
                           </div>
                         </div>
+
+                        <div className="d-flex flex-row align-items-center mb-4">
+                          <i className="fas fa-user fa-lg me-3 fa-fw" />
+                          <div className="form-outline flex-fill mb-0">
+                            <div className="input-group mb-3">
+                              <div className="input-group-text">
+                                <FaBirthdayCake />
+                              </div>
+                              <input 
+                              style={{ padding: 12 }} 
+                              type="date" 
+                              onChange={(e) => setDateOfBirth(e.target.value)}/>
+                              <div className="form-outline flex-fill mb-0">
+                                <select  onChange={(e) => setrole(e.target.value)} style={{ padding: 12 }}>
+                                  <option value="student">Student</option>
+                                  <option value="instructor">Instructor</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-envelope fa-lg me-3 fa-fw" />
                           <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="Email"
-                              className="form-control"
-                              value={Email}
-                              placeholder="Email"
-                              onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example3c"
-                            >
-                              Your Email
-                            </label>
+                            <div className="input-group mb-3">
+                              <div className="input-group-text">
+                                <FaEnvelope />
+                              </div>
+                              <input
+                                type="Email"
+                                style={{ padding: 24 }}
+                                className="form-control"
+                                value={email}
+                                placeholder="Email"
+                                onChange={(e) => setEmail(e.target.value)}
+                              />
+                            </div>
                           </div>
                         </div>
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-lock fa-lg me-3 fa-fw" />
                           <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="Password"
-                              className="form-control"
-                              value={Password}
-                              placeholder="Passwrd"
-                              onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example4c"
-                            >
-                              Password
-                            </label>
+                            <div className="input-group mb-3">
+                              <div className="input-group-text">
+                                <FaPhoneAlt />
+                              </div>
+                              <input
+                                type="text"
+                                style={{ padding: 24 }}
+                                className="form-control"
+                                value={telephone}
+                                placeholder="Phone Number"
+                                onChange={(e) => setTelephone(e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="d-flex flex-row align-items-center mb-4">
+                          <i className="fas fa-lock fa-lg me-3 fa-fw" />
+                          <div className="form-outline flex-fill mb-0">
+                            <div className="input-group mb-3">
+                              <div className="input-group-text">
+                                <FaBan />
+                              </div>
+                              <input
+                                type="Password"
+                                style={{ padding: 24 }}
+                                className="form-control"
+                                value={password}
+                                placeholder="Passwrd"
+                                onChange={(e) => setPassword(e.target.value)}
+                              />
+                            </div>
                           </div>
                         </div>
 
@@ -149,15 +252,15 @@ export default function SignUp() {
                             className="form-check-label"
                             htmlFor="form2Example3"
                           >
-                            I agree all statements in{" "}
-                            <a href="#!">Terms of service</a>
+                            I agree all statements in
+                            <a href="#!"> Terms of service</a>
                           </label>
                         </div>
                         <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                           <button
                             type="button"
-                            className="btn btn-primary py-3 px-5"
                             onClick={handleClick}
+                            className="blue_btn"
                           >
                             Register
                           </button>

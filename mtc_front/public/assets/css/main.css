@@ -116,3 +116,14 @@ h3{
   font-size: 15px;
   border: none;
 }
+/* ----blue btn----*/
+.blue_btn {
+  color: aliceblue;
+padding: 12px 0;
+background-color: #080039;
+border-radius: 20px;
+width: 200px;
+font-weight: bold;
+font-size: 15px;
+cursor: pointer;
+}
